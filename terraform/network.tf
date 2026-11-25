@@ -4,6 +4,13 @@ resource "cloudstack_vpc" "main" {
   cidr         = var.vpc_cidr
   vpc_offering = var.vpc_offering
   zone         = data.cloudstack_zone.this.name
+
+  lifecycle {
+    precondition {
+      condition     = can(regex("^ssh-(ed25519|rsa) ", local.ssh_public_key))
+      error_message = "SSH public key not found at ssh_public_key_path. Run ssh-keygen -t ed25519 first."
+    }
+  }
 }
 
 resource "cloudstack_network_acl" "web" {

@@ -1,5 +1,6 @@
 locals {
-  ssh_public_key = trimspace(file(pathexpand(var.ssh_public_key_path)))
+  ssh_key_file   = pathexpand(var.ssh_public_key_path)
+  ssh_public_key = fileexists(local.ssh_key_file) ? trimspace(file(local.ssh_key_file)) : ""
 
   web_nodes = {
     for i in range(var.web_count) : format("web%02d", i + 1) => {
