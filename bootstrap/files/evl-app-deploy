@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="${1:?usage: evl-app-deploy <image>}"
+
+docker pull "${IMAGE}"
+docker rm -f evlocker >/dev/null 2>&1 || true
+docker run -d --name evlocker \
+  --restart unless-stopped \
+  --env-file /etc/evlocker/app.env \
+  -e APP_IMAGE="${IMAGE}" \
+  -p 127.0.0.1:8000:8000 \
+  --read-only --tmpfs /tmp \
+  --cap-drop ALL \
+  --security-opt no-new-privileges \
+  --memory 512m --pids-limit 200 \
+  "${IMAGE}"
+
+for _ in $(seq 1 30); do
+  if curl -fsS http://127.0.0.1:8000/healthz >/dev/null; then
+    echo "deployed ${IMAGE}"
+    exit 0
+  fi
+  sleep 2
+done
+docker logs --tail 50 evlocker || true
+exit 1

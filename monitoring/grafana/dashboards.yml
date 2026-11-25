@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: evlocker
+    folder: evlocker
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

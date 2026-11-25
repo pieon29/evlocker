@@ -1,0 +1,28 @@
+#cloud-config
+hostname: ${hostname}
+manage_etc_hosts: true
+ssh_pwauth: false
+disable_root: true
+chpasswd:
+  expire: false
+  users:
+    - name: ubuntu
+      password: ${console_password}
+      type: text
+ssh_authorized_keys:
+  - ${ssh_public_key}
+write_files:
+  - path: /etc/evlocker/node.env
+    permissions: '0600'
+    owner: root:root
+    encoding: b64
+    content: ${env_b64}
+%{ for f in files ~}
+  - path: ${f.path}
+    permissions: '${f.mode}'
+    owner: root:root
+    encoding: b64
+    content: ${f.content}
+%{ endfor ~}
+runcmd:
+  - [bash, -c, "for i in $(seq 1 30); do git clone ${repo_url} /opt/evlocker && break; sleep 10; done; git -C /opt/evlocker checkout ${repo_ref} && bash /opt/evlocker/bootstrap/run.sh >> /var/log/evlocker-bootstrap.log 2>&1"]

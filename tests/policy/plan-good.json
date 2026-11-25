@@ -1,0 +1,133 @@
+{
+ "resource_changes": [
+  {
+   "address": "module.node[\"web01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "web01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"web02\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "web02",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"db01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "db01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"db02\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "db02",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"mon01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "mon01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "cloudstack_network_acl_rule.x",
+   "mode": "managed",
+   "type": "cloudstack_network_acl_rule",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "rule": [
+      {
+       "traffic_type": "ingress",
+       "protocol": "tcp",
+       "cidr_list": [
+        "0.0.0.0/0"
+       ],
+       "ports": [
+        "80",
+        "443"
+       ]
+      },
+      {
+       "traffic_type": "ingress",
+       "protocol": "tcp",
+       "cidr_list": [
+        "10.0.0.0/16"
+       ],
+       "ports": [
+        "22"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "address": "cloudstack_port_forward.bastion",
+   "mode": "managed",
+   "type": "cloudstack_port_forward",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "forward": [
+      {
+       "private_port": 22,
+       "public_port": 2222,
+       "protocol": "tcp"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

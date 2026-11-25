@@ -1,0 +1,6 @@
+api_key     = "REPLACE_WITH_API_KEY"
+secret_key  = "REPLACE_WITH_SECRET_KEY"
+name_prefix = "32191170"
+repo_url    = "https://github.com/REPLACE_GITHUB_ID/evlocker.git"
+repo_ref    = "main"
+app_image   = "ghcr.io/REPLACE_GITHUB_ID/evlocker:REPLACE_TAG"

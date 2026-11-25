@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+set -a
+. /etc/evlocker/node.env
+set +a
+
+OUT_DIR=/srv/backup/dumps
+PROM=/var/lib/prometheus/node-exporter/evl_backup.prom
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+OUT="${OUT_DIR}/evlocker-${TS}.dump.enc"
+START="$(date +%s.%N)"
+
+PGSSLMODE=require pg_dump -h "${DB_VIP}" -U evl_backup -d evlocker -Fc \
+  | openssl enc -aes-256-cbc -pbkdf2 -salt -pass file:/etc/evlocker/backup.key -out "${OUT}.part"
+mv "${OUT}.part" "${OUT}"
+sha256sum "${OUT}" > "${OUT}.sha256"
+
+END="$(date +%s.%N)"
+SIZE="$(stat -c %s "${OUT}")"
+find "${OUT_DIR}" -name 'evlocker-*.dump.enc*' -mmin +2880 -delete
+
+cat > "${PROM}.tmp" <<EOF
+evl_backup_last_success_timestamp_seconds{kind="dump"} $(date +%s)
+evl_backup_last_size_bytes{kind="dump"} ${SIZE}
+evl_backup_last_duration_seconds{kind="dump"} $(echo "${END} - ${START}" | bc)
+EOF
+mv "${PROM}.tmp" "${PROM}"
+logger -t evl-backup "dump ok file=${OUT} size=${SIZE}"

@@ -1,0 +1,51 @@
+groups:
+  - name: evl-slo
+    rules:
+      - record: evl:requests:rate5m
+        expr: sum(rate(evl_http_requests_total[5m]))
+      - record: evl:availability:ratio_rate5m
+        expr: sum(rate(evl_http_requests_total{status!~"5.."}[5m])) / clamp_min(sum(rate(evl_http_requests_total[5m])), 1e-9)
+      - record: evl:latency_p95_seconds:5m
+        expr: histogram_quantile(0.95, sum by (le) (rate(evl_http_request_duration_seconds_bucket[5m])))
+      - record: evl:edge_probe_success:ratio_1h
+        expr: avg_over_time(probe_success{job="blackbox-edge"}[1h])
+      - record: evl:web_probe_success:ratio_1h
+        expr: avg(avg_over_time(probe_success{job="blackbox-web"}[1h]))
+
+  - name: evl-alerts
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.job }} {{ $labels.instance }} down"
+      - alert: HighErrorRate
+        expr: (1 - evl:availability:ratio_rate5m) > 0.01 and evl:requests:rate5m > 0.1
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: "5xx ratio above 1% for 2m"
+      - alert: LatencySLOBreach
+        expr: evl:latency_p95_seconds:5m > 0.3
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "p95 latency above 300ms"
+      - alert: ReplicationLagHigh
+        expr: max(pg_replication_lag_seconds) > 30 or max(pg_replication_lag) > 30
+        for: 2m
+        labels: {severity: warning}
+        annotations:
+          summary: "standby lag above 30s"
+      - alert: BackupStale
+        expr: time() - max(evl_backup_last_success_timestamp_seconds{kind="dump"}) > 1800
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: "no successful dump in 30 minutes (RPO 15m at risk)"
+      - alert: AuthFailureBurst
+        expr: sum(increase(evl_auth_failures_total[5m])) > 20
+        labels: {severity: critical}
+        annotations:
+          summary: "more than 20 failed token authentications in 5m"

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+set -a
+. /etc/evlocker/node.env
+set +a
+
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+DEST="/srv/backup/base/${TS}"
+PGSSLMODE=require pg_basebackup -h "${DB_VIP}" -U evl_backup -D "${DEST}" -Ft -z -X fetch
+ls -1dt /srv/backup/base/*/ | tail -n +4 | xargs -r rm -rf
+logger -t evl-backup "basebackup ok dir=${DEST}"

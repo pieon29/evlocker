@@ -1,0 +1,11 @@
+modules:
+  https_health:
+    prober: http
+    timeout: 3s
+    http:
+      method: GET
+      valid_status_codes: [200]
+      fail_if_not_ssl: true
+      tls_config:
+        ca_file: /etc/blackbox/edge-ca.crt
+        server_name: evlocker.test

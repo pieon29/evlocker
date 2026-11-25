@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -u
+. /etc/evlocker/node.env
+. /etc/evlocker/pg.env
+
+log() { logger -t evl-failover "$*"; echo "[$(date -Is)] $*"; }
+
+in_recovery="$(sudo -u postgres psql -tAqc 'select pg_is_in_recovery()' 2>/dev/null || echo unknown)"
+if [ "${in_recovery}" != "t" ]; then
+  log "node=${NODE_NAME} became MASTER, already primary (recovery=${in_recovery})"
+  exit 0
+fi
+
+peer_primary="$(PGPASSWORD="${DB_REPL_PASSWORD}" PGCONNECT_TIMEOUT=2 psql "host=${DB_PEER_IP} dbname=postgres user=replicator sslmode=require" -tAqc 'select not pg_is_in_recovery()' 2>/dev/null || echo unreachable)"
+if [ "${peer_primary}" = "t" ]; then
+  log "node=${NODE_NAME} refusing promote: peer ${DB_PEER_IP} is still a reachable primary"
+  exit 0
+fi
+
+log "node=${NODE_NAME} promoting standby to primary (peer=${peer_primary})"
+pg_ctlcluster "${PGVER}" main promote
+log "node=${NODE_NAME} promote finished"

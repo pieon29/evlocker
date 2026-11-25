@@ -1,0 +1,9 @@
+[Unit]
+Description=evlocker daily base backup
+
+[Timer]
+OnCalendar=*-*-* 03:10:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

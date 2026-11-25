@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DUMP="${1:-$(ls -1t /srv/backup/dumps/evlocker-*.dump.enc | head -1)}"
+WORK="$(mktemp -d)"
+trap 'docker rm -f evl-restore >/dev/null 2>&1 || true; rm -rf "${WORK}"' EXIT
+
+T0="$(date +%s)"
+sha256sum -c "${DUMP}.sha256"
+openssl enc -d -aes-256-cbc -pbkdf2 -pass file:/etc/evlocker/backup.key -in "${DUMP}" -out "${WORK}/restore.dump"
+chmod 644 "${WORK}/restore.dump"
+
+docker run -d --name evl-restore -e POSTGRES_PASSWORD=drill -e POSTGRES_DB=evlocker \
+  -v "${WORK}:/restore:ro" postgres:16.4-bookworm >/dev/null
+until docker exec evl-restore pg_isready -q -U postgres; do sleep 1; done
+sleep 2
+docker exec evl-restore psql -q -U postgres -c "CREATE ROLE evl_owner NOLOGIN; CREATE ROLE evl_app LOGIN; CREATE ROLE evl_backup LOGIN;"
+docker exec evl-restore pg_restore -U postgres -d evlocker --no-owner --role=postgres /restore/restore.dump
+T1="$(date +%s)"
+
+echo "dump=${DUMP}"
+echo "dump_taken_at=$(basename "${DUMP}" | sed -E 's/evlocker-([0-9TZ]+)\.dump\.enc/\1/')"
+docker exec evl-restore psql -U postgres -d evlocker -Atc \
+  "select 'evidence_rows='||count(*) from evidence; select 'custody_rows='||count(*) from custody_events; select 'latest_event='||max(created_at) from custody_events;"
+echo "restore_seconds=$((T1 - T0))"

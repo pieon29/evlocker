@@ -1,0 +1,50 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+      - --storage.tsdb.retention.size=3GB
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./rules:/etc/prometheus/rules:ro
+      - ./edge-ca.crt:/etc/prometheus/edge-ca.crt:ro
+      - prom-data:/prometheus
+    ports:
+      - 127.0.0.1:9090:9090
+    networks: [mon]
+
+  blackbox:
+    image: prom/blackbox-exporter:v0.25.0
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+      - ./blackbox.yml:/etc/blackbox/blackbox.yml:ro
+      - ./edge-ca.crt:/etc/blackbox/edge-ca.crt:ro
+    networks: [mon]
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    restart: unless-stopped
+    env_file: grafana.env
+    environment:
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - 127.0.0.1:3000:3000
+    networks: [mon]
+
+volumes:
+  prom-data:
+  grafana-data:
+
+networks:
+  mon:

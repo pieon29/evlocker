@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+. /etc/evlocker/node.env
+. /etc/evlocker/pg.env
+
+PGDATA="/var/lib/postgresql/${PGVER}/main"
+PRIMARY="${1:-${DB_PEER_IP}}"
+
+logger -t evl-failover "node=${NODE_NAME} rejoin as standby of ${PRIMARY} start"
+systemctl stop keepalived
+systemctl stop postgresql
+rm -rf "${PGDATA:?}"/*
+sudo -u postgres env PGPASSWORD="${DB_REPL_PASSWORD}" PGSSLMODE=require \
+  pg_basebackup -h "${PRIMARY}" -U replicator -D "${PGDATA}" -X stream -R
+chmod 700 "${PGDATA}"
+systemctl start postgresql
+until pg_isready -q; do sleep 1; done
+systemctl start keepalived
+logger -t evl-failover "node=${NODE_NAME} rejoin as standby of ${PRIMARY} done"
+sudo -u postgres psql -tAc 'select pg_is_in_recovery()'

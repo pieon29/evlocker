@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec pg_isready -q -h /var/run/postgresql -t 2

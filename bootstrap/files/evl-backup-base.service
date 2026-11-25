@@ -1,0 +1,7 @@
+[Unit]
+Description=evlocker physical base backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/evl-backup-base

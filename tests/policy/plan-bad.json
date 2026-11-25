@@ -1,0 +1,161 @@
+{
+ "resource_changes": [
+  {
+   "address": "module.node[\"web01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "web01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"web02\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "web02",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"web03\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "web03",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"db01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "db01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"db02\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "db02",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"mon01\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "mon01",
+     "expunge": true,
+     "root_disk_size": 20
+    }
+   }
+  },
+  {
+   "address": "module.node[\"extra\"].cloudstack_instance.this",
+   "mode": "managed",
+   "type": "cloudstack_instance",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "name": "extra",
+     "expunge": false,
+     "root_disk_size": 40
+    }
+   }
+  },
+  {
+   "address": "cloudstack_network_acl_rule.x",
+   "mode": "managed",
+   "type": "cloudstack_network_acl_rule",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "rule": [
+      {
+       "traffic_type": "ingress",
+       "protocol": "tcp",
+       "cidr_list": [
+        "0.0.0.0/0"
+       ],
+       "ports": [
+        "22",
+        "5432"
+       ]
+      },
+      {
+       "traffic_type": "ingress",
+       "protocol": "all",
+       "cidr_list": [
+        "0.0.0.0/0"
+       ],
+       "ports": []
+      }
+     ]
+    }
+   }
+  },
+  {
+   "address": "cloudstack_port_forward.db",
+   "mode": "managed",
+   "type": "cloudstack_port_forward",
+   "change": {
+    "actions": [
+     "create"
+    ],
+    "after": {
+     "forward": [
+      {
+       "private_port": 5432,
+       "public_port": 5432,
+       "protocol": "tcp"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

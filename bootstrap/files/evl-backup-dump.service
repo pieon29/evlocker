@@ -1,0 +1,7 @@
+[Unit]
+Description=evlocker encrypted logical backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/evl-backup-dump
