@@ -4,6 +4,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 FROM python:3.12.8-slim-bookworm
+RUN apt-get update \
+ && apt-get -y upgrade \
+ && rm -rf /var/lib/apt/lists/*
 ARG APP_VERSION=1.0.0
 ENV APP_VERSION=${APP_VERSION} \
     PYTHONUNBUFFERED=1 \
