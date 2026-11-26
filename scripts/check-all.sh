@@ -29,7 +29,7 @@ echo "== haproxy"
 ssh evl-bastion "curl -s 'http://127.0.0.1:8404/stats;csv' | cut -d, -f1,2,18 | grep -E 'web0'"
 
 echo "== backup"
-ssh evl-bastion 'sudo ls -l /srv/backup/dumps | tail -2; cat /var/lib/prometheus/node-exporter/evl_backup.prom 2>/dev/null || echo "no backup metric yet"'
+ssh evl-bastion 'sudo ls -l /srv/backup/dumps | tail -2; sudo cat /var/lib/prometheus/node-exporter/evl_backup.prom 2>/dev/null || echo "no backup metric yet"'
 
 echo "== prometheus targets"
 ssh evl-bastion "curl -s http://127.0.0.1:9090/api/v1/targets | jq -r '.data.activeTargets[] | \"\(.health) \(.labels.job) \(.labels.instance)\"' | sort | uniq -c | sort -rn"

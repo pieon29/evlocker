@@ -25,5 +25,6 @@ evl_backup_last_success_timestamp_seconds{kind="dump"} $(date +%s)
 evl_backup_last_size_bytes{kind="dump"} ${SIZE}
 evl_backup_last_duration_seconds{kind="dump"} $(echo "${END} - ${START}" | bc)
 EOF
+chmod 0644 "${PROM}.tmp"
 mv "${PROM}.tmp" "${PROM}"
 logger -t evl-backup "dump ok file=${OUT} size=${SIZE}"
