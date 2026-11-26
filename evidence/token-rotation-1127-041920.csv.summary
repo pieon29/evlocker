@@ -1,0 +1,3 @@
+saved /c/Users/pieon/evlocker/evidence/token-rotation-1127-041920.csv
+requests=361 failed=3 availability=99.169%
+first_fail_ms=1795720851570 last_fail_ms=1795720854986 outage_window_s=3.4
