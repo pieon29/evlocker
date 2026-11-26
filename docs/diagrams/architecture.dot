@@ -8,7 +8,7 @@ digraph G {
   subgraph cluster_net {
     label="Shared Network (단일 L2, 분리는 호스트 방화벽 /32 규칙으로 구현)"; style="rounded,dashed"; color="#888888"; fontsize=11;
 
-    mon [label="mon01  (단일 진입점)\n─────────────\nHAProxy :443/:80  (TCP, PROXY v2)\nBastion SSH :22\nPrometheus · Grafana · Blackbox\nrsyslog 중앙 로그 (400일)\n암호화 백업 · pg_receivewal", fillcolor="#fff4e0"];
+    mon [label="mon01  (단일 진입점)\n─────────────\nHAProxy :443/:80  (TCP, PROXY v2)\nBastion SSH :22\nPrometheus · Grafana · Blackbox\nrsyslog 중앙 로그 (760일)\n암호화 백업 · pg_receivewal", fillcolor="#fff4e0"];
 
     subgraph cluster_web {
       label="웹 계층  (mon01에서만 접근)"; style="rounded"; color="#4a7bb7";

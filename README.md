@@ -13,7 +13,7 @@
 
 | 노드 | 역할 |
 |---|---|
-| mon01 | 단일 진입점: HAProxy(PROXY protocol v2) + Bastion, Prometheus·Grafana, 중앙 로그(400일), 암호화 백업, WAL 실시간 수집 |
+| mon01 | 단일 진입점: HAProxy(PROXY protocol v2) + Bastion, Prometheus·Grafana, 중앙 로그(760일), 암호화 백업, WAL 실시간 수집 |
 | web01, web02 | Nginx(TLS 1.2/1.3, 실제 접속자 IP 기준 요청 제한) + 앱 컨테이너(읽기 전용, capability 전부 제거) |
 | db01, db02 | PostgreSQL 16 스트리밍 복제, Keepalived 자동 승격, 앱은 libpq 멀티호스트로 주 DB 자동 탐색 |
 
@@ -57,7 +57,7 @@ bash scripts/check-all.sh
 ## 문서
 
 - [docs/REPORT.md](docs/REPORT.md): 설계, 워크플로우, 측정, 시나리오, 한계
-- [docs/troubleshooting.md](docs/troubleshooting.md): 문제 해결 12건
+- [docs/troubleshooting.md](docs/troubleshooting.md): 문제 해결 13건
 - [docs/static-analysis.md](docs/static-analysis.md): CI 정적 분석과 조치
 - [ai-log.md](ai-log.md): AI 활용과 AI가 틀린 사례
 - [THIRD_PARTY.md](THIRD_PARTY.md): 사용한 오픈소스

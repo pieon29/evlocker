@@ -15,7 +15,7 @@ install -d -o syslog -g adm -m 0750 /var/log/remote
 cat > /etc/logrotate.d/evl-remote <<'EOF'
 /var/log/remote/*/*.log {
     daily
-    rotate 400
+    rotate 760
     dateext
     compress
     delaycompress
@@ -35,7 +35,7 @@ haproxy -c -f /etc/haproxy/haproxy.cfg
 cat > /etc/logrotate.d/haproxy <<'EOF'
 /var/log/haproxy.log {
     daily
-    rotate 400
+    rotate 760
     dateext
     compress
     delaycompress
