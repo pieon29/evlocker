@@ -53,7 +53,10 @@ done
 install -d -m 0755 /var/lib/prometheus/node-exporter
 systemctl daemon-reload
 
+install -d -m 0755 /etc/docker
+printf '{\n  "log-driver": "journald",\n  "mtu": 1400\n}\n' > /etc/docker/daemon.json
 systemctl enable --now docker
+systemctl restart docker
 MON_DIR=/opt/evlocker-mon
 install -d -m 0755 "${MON_DIR}" "${MON_DIR}/rules" "${MON_DIR}/grafana/provisioning/datasources" "${MON_DIR}/grafana/provisioning/dashboards" "${MON_DIR}/grafana/dashboards"
 cp /etc/evlocker/tls/server.crt "${MON_DIR}/edge-ca.crt"
@@ -67,6 +70,7 @@ bash /opt/evlocker/monitoring/gen-prometheus.sh > "${MON_DIR}/prometheus.yml"
 umask 077
 printf 'GF_SECURITY_ADMIN_PASSWORD=%s\n' "${GRAFANA_ADMIN_PASSWORD}" > "${MON_DIR}/grafana.env"
 umask 022
+wait_for 20 docker compose -f "${MON_DIR}/compose.yaml" pull
 docker compose -f "${MON_DIR}/compose.yaml" up -d
 
 wait_for 60 pg_isready -q -h "${DB_VIP}"

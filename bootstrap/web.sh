@@ -6,6 +6,7 @@ install -d -m 0755 /etc/docker
 cat > /etc/docker/daemon.json <<'EOF'
 {
   "log-driver": "journald",
+  "mtu": 1400,
   "live-restore": true,
   "no-new-privileges": true
 }

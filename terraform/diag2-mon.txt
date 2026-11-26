@@ -1,0 +1,25 @@
+--- mon01 mtu
+2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+--- dhcp mtu
+                         MTU: 1500 (min: 68, max: 65535)
+--- ping web01
+ok 1422
+ok 1372
+--- docker hub
+401
+--- bootstrap log
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [=============>                                     ]  3.146MB/11.37MB
+ 692bab6142b7 Downloading [================================>                  ]  7.422MB/11.37MB
+ 692bab6142b7 Downloading [==================================================>]  11.37MB/11.37MB
+ prometheus Error failed to resolve reference "docker.io/prom/prometheus:v2.55.1": failed to do request: Head "https://registry-1.docker.io/v2/prom/prometheus/manifests/v2.55.1": net/http: TLS handshake timeout
+ grafana  Interrupted
+Error response from daemon: failed to resolve reference "docker.io/prom/prometheus:v2.55.1": failed to do request: Head "https://registry-1.docker.io/v2/prom/prometheus/manifests/v2.55.1": net/http: TLS handshake timeout

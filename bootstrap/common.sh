@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "mtu: $(ip -o link show "$(primary_iface)" | grep -o 'mtu [0-9]*')"
 apt-get update -y
 apt_install ca-certificates curl gettext-base jq ufw chrony rsyslog prometheus-node-exporter unattended-upgrades
 

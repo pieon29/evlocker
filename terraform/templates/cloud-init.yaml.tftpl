@@ -2,7 +2,20 @@
 hostname: ${hostname}
 manage_etc_hosts: true
 bootcmd:
-  - [sh, -c, "for i in $(ls /sys/class/net | grep -v '^lo$'); do ip link set dev $i mtu ${mtu}; done"]
+  - |
+    IF=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
+    cat > /etc/netplan/90-evl-mtu.yaml <<NETPLAN
+    network:
+      version: 2
+      ethernets:
+        $IF:
+          mtu: ${mtu}
+          dhcp4-overrides:
+            use-mtu: false
+    NETPLAN
+    chmod 600 /etc/netplan/90-evl-mtu.yaml
+    netplan apply || true
+    ip link set dev "$IF" mtu ${mtu}
 ssh_pwauth: false
 disable_root: true
 chpasswd:
