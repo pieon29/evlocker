@@ -22,3 +22,6 @@
 | 4 | 처음 설계안을 Small VM 7대로 제안 | Primary storage 120GB / VM당 루트 20GB라 최대 6대 | Limits 값으로 계산 | 5대 + 여유 1대로 축소 |
 
 (배포·측정 단계에서 추가로 발견되는 오류를 계속 기록한다.)
+| 5 | MTU 문제를 cloud-init bootcmd의 일회성 `ip link set`으로 해결된다고 판단 | 이후 네트워크 재설정에서 1500으로 복귀 | 재배포 후 `ip link` 확인 | MSS 클램핑으로 교체 |
+| 6 | bootcmd에서 `netplan apply` 실행, netplan 파일로 MTU 고정 | 부팅 중 교착으로 SSH 키 미적용, 이어서 netplan 설정 충돌로 네트워크 소실 | 콘솔 화면 `netplan failed`, 로그인 불가 | netplan 방식 폐기 |
+| 7 | 모든 설정과 시크릿을 user-data 하나에 담는 설계 | 일부 VM이 부팅 초반 큰 user-data를 받지 못함. 또 user-data는 VM 안에서 인증 없이 조회 가능해 시크릿 보관 위치로 부적절 | 콘솔 호스트명 비교, 라우터 user-data 대리 조회 | user-data 최소화 + provisioner로 시크릿 전달 |

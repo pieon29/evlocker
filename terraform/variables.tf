@@ -120,6 +120,12 @@ variable "ssh_public_key_path" {
   default = "~/.ssh/id_ed25519.pub"
 }
 
+variable "ssh_private_key_path" {
+  description = "Private key used only by Terraform provisioners to push secrets and run the bootstrap over the bastion"
+  type        = string
+  default     = "~/.ssh/id_ed25519"
+}
+
 variable "repo_url" {
   description = "Public Git repository that holds the bootstrap scripts"
   type        = string

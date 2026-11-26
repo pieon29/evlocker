@@ -1,12 +1,6 @@
 #cloud-config
 hostname: ${hostname}
 manage_etc_hosts: true
-bootcmd:
-  - |
-    IF=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
-    ip link set dev "$IF" mtu ${mtu}
-    sysctl -w net.ipv4.tcp_mtu_probing=1
-    iptables -t mangle -C POSTROUTING -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${mtu - 40} 2>/dev/null || iptables -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${mtu - 40}
 ssh_pwauth: false
 disable_root: true
 chpasswd:
@@ -17,19 +11,9 @@ chpasswd:
       type: text
 ssh_authorized_keys:
   - ${ssh_public_key}
-write_files:
-  - path: /etc/evlocker/node.env
-    permissions: '0600'
-    owner: root:root
-    encoding: b64
-    content: ${env_b64}
-%{ for f in files ~}
-  - path: ${f.path}
-    permissions: '${f.mode}'
-    owner: root:root
-    encoding: b64
-    content: ${f.content}
-%{ endfor ~}
-runcmd:
-  - [bash, -c, "ip link set dev $(ip -o -4 route show default | awk '{print $5; exit}') mtu ${mtu}; ip -o link show | grep -o 'mtu [0-9]*' | head -2; iptables -t mangle -S POSTROUTING"]
-  - [bash, -c, "for i in $(seq 1 30); do git clone ${repo_url} /opt/evlocker && break; sleep 10; done; git -C /opt/evlocker checkout ${repo_ref} && bash /opt/evlocker/bootstrap/run.sh >> /var/log/evlocker-bootstrap.log 2>&1"]
+bootcmd:
+  - |
+    IF=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
+    ip link set dev "$IF" mtu ${mtu}
+    sysctl -w net.ipv4.tcp_mtu_probing=1
+    iptables -t mangle -C POSTROUTING -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${mtu - 40} 2>/dev/null || iptables -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${mtu - 40}

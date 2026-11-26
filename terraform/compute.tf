@@ -67,12 +67,12 @@ locals {
     {
       path    = "/etc/evlocker/tls/server.crt"
       mode    = "0644"
-      content = base64encode(tls_self_signed_cert.web.cert_pem)
+      content = tls_self_signed_cert.web.cert_pem
     },
     {
       path    = "/etc/evlocker/tls/server.key"
       mode    = "0600"
-      content = base64encode(tls_private_key.web.private_key_pem)
+      content = tls_private_key.web.private_key_pem
     },
   ]
 
@@ -100,10 +100,6 @@ module "node" {
     mtu              = var.vm_mtu
     ssh_public_key   = local.ssh_public_key
     console_password = random_password.console.result
-    env_b64          = base64encode(join("\n", concat([for k, v in merge(each.value.env, { NODE_NAME = each.key, NODE_IP = each.value.ip }) : "${k}='${v}'"], [""])))
-    files            = each.value.files
-    repo_url         = var.repo_url
-    repo_ref         = var.repo_ref
   })
 
   depends_on = [
