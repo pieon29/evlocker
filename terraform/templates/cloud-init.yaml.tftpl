@@ -14,7 +14,6 @@ bootcmd:
             use-mtu: false
     NETPLAN
     chmod 600 /etc/netplan/90-evl-mtu.yaml
-    netplan apply || true
     ip link set dev "$IF" mtu ${mtu}
 ssh_pwauth: false
 disable_root: true
@@ -40,4 +39,5 @@ write_files:
     content: ${f.content}
 %{ endfor ~}
 runcmd:
+  - [bash, -c, "netplan apply || true; ip link set dev $(ip -o -4 route show default | awk '{print $5; exit}') mtu ${mtu}; ip -o link show | grep -o 'mtu [0-9]*' | head -2"]
   - [bash, -c, "for i in $(seq 1 30); do git clone ${repo_url} /opt/evlocker && break; sleep 10; done; git -C /opt/evlocker checkout ${repo_ref} && bash /opt/evlocker/bootstrap/run.sh >> /var/log/evlocker-bootstrap.log 2>&1"]
