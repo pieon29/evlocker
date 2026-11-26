@@ -25,3 +25,4 @@
 | 5 | MTU 문제를 cloud-init bootcmd의 일회성 `ip link set`으로 해결된다고 판단 | 이후 네트워크 재설정에서 1500으로 복귀 | 재배포 후 `ip link` 확인 | MSS 클램핑으로 교체 |
 | 6 | bootcmd에서 `netplan apply` 실행, netplan 파일로 MTU 고정 | 부팅 중 교착으로 SSH 키 미적용, 이어서 netplan 설정 충돌로 네트워크 소실 | 콘솔 화면 `netplan failed`, 로그인 불가 | netplan 방식 폐기 |
 | 7 | 모든 설정과 시크릿을 user-data 하나에 담는 설계 | 일부 VM이 부팅 초반 큰 user-data를 받지 못함. 또 user-data는 VM 안에서 인증 없이 조회 가능해 시크릿 보관 위치로 부적절 | 콘솔 호스트명 비교, 라우터 user-data 대리 조회 | user-data 최소화 + provisioner로 시크릿 전달 |
+| 8 | VPC 라우터(VR)의 DHCP·user-data 전달 실패를 매번 설정 문제로 보고 MTU·netplan·user-data 크기 조정을 반복 제안 | 같은 정의에서 VM마다 결과가 달라지는 플랫폼 쪽 불안정이었고, 학생 권한으로는 라우터를 진단할 수 없음 | 7번 조치 후에도 다른 VM(mon01)에서 같은 증상 재현 | 원인 추적을 멈추고 Shared Network로 전환, 결정 근거와 트레이드오프를 리포트에 기록 |

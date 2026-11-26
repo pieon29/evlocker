@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-apt_install docker.io docker-compose-v2 postgresql-client fail2ban openssl bc
+apt_install docker.io docker-compose-v2 postgresql-client fail2ban openssl bc haproxy
 
 cat > /etc/rsyslog.d/10-remote.conf <<'EOF'
 module(load="imtcp")
@@ -29,6 +29,25 @@ cat > /etc/logrotate.d/evl-remote <<'EOF'
 EOF
 systemctl restart rsyslog
 systemctl enable --now fail2ban
+
+bash "${BOOT_DIR}/files/haproxy-gen.sh" > /etc/haproxy/haproxy.cfg
+haproxy -c -f /etc/haproxy/haproxy.cfg
+cat > /etc/logrotate.d/haproxy <<'EOF'
+/var/log/haproxy.log {
+    daily
+    rotate 400
+    dateext
+    compress
+    delaycompress
+    missingok
+    notifempty
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}
+EOF
+systemctl enable haproxy
+systemctl restart haproxy
 
 install -d -m 0700 /srv/backup /srv/backup/dumps /srv/backup/base /srv/backup/wal
 if [ ! -s /etc/evlocker/backup.key ]; then
@@ -73,12 +92,18 @@ umask 022
 wait_for 20 docker compose -f "${MON_DIR}/compose.yaml" pull
 docker compose -f "${MON_DIR}/compose.yaml" up -d
 
-wait_for 60 pg_isready -q -h "${DB_VIP}"
+db_primary_ready() {
+  PGSSLMODE=require psql "host=${DB1_IP},${DB2_IP} dbname=evlocker user=evl_backup target_session_attrs=read-write connect_timeout=3" -tAc 'select 1' >/dev/null 2>&1
+}
+wait_for 90 db_primary_ready
 systemctl enable --now evl-receivewal.service
 systemctl enable --now evl-backup-dump.timer evl-backup-base.timer
 systemctl start evl-backup-dump.service || true
 
 ufw allow 22/tcp
-ufw allow from "${WEB_CIDR}" to any port 514 proto tcp
-ufw allow from "${DATA_CIDR}" to any port 514 proto tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+for ip in ${WEB_IPS} "${DB1_IP}" "${DB2_IP}"; do
+  ufw allow from "${ip}" to any port 514 proto tcp
+done
 ufw --force enable

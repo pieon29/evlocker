@@ -1,32 +1,26 @@
 output "service_url" {
-  value = "https://${cloudstack_ipaddress.web.ip_address}/"
+  value = "https://${local.mon_ip}/"
 }
 
 output "bastion" {
-  value = "ssh -p ${var.bastion_public_port} ubuntu@${cloudstack_ipaddress.mgmt.ip_address}"
+  value = "ssh ubuntu@${local.mon_ip}"
 }
 
 output "nodes" {
-  value = { for k, v in module.node : k => v.ip_address }
-}
-
-output "db_vip" {
-  value = local.db_vip
+  value = local.ip
 }
 
 output "ssh_config" {
   value = join("\n", concat(
     [
       "Host evl-bastion",
-      "  HostName ${cloudstack_ipaddress.mgmt.ip_address}",
-      "  Port ${var.bastion_public_port}",
+      "  HostName ${local.mon_ip}",
       "  User ubuntu",
-      "  ForwardAgent no",
       "",
     ],
-    flatten([for k, v in module.node : k == "mon01" ? [] : [
+    flatten([for k, v in local.ip : k == "mon01" ? [] : [
       "Host evl-${k}",
-      "  HostName ${v.ip_address}",
+      "  HostName ${v}",
       "  User ubuntu",
       "  ProxyJump evl-bastion",
       "",

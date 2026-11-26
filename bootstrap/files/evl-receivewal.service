@@ -6,7 +6,7 @@ After=network-online.target
 EnvironmentFile=/etc/evlocker/node.env
 Environment=PGSSLMODE=require
 Environment=HOME=/root
-ExecStart=/bin/sh -c 'exec pg_receivewal -h "$DB_VIP" -U evl_backup -D /srv/backup/wal --no-loop'
+ExecStart=/bin/sh -c 'exec pg_receivewal -d "host=$DB1_IP,$DB2_IP user=evl_backup target_session_attrs=read-write connect_timeout=5" -D /srv/backup/wal --no-loop'
 Restart=always
 RestartSec=5
 

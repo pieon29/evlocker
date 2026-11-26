@@ -51,7 +51,7 @@ resource "tls_self_signed_cert" "web" {
   private_key_pem       = tls_private_key.web.private_key_pem
   validity_period_hours = 2160
   dns_names             = [var.app_domain]
-  ip_addresses          = [cloudstack_ipaddress.web.ip_address]
+  ip_addresses          = [module.node["mon01"].ip_address]
 
   subject {
     common_name  = var.app_domain

@@ -10,7 +10,7 @@ TS="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT="${OUT_DIR}/evlocker-${TS}.dump.enc"
 START="$(date +%s.%N)"
 
-PGSSLMODE=require pg_dump -h "${DB_VIP}" -U evl_backup -d evlocker -Fc \
+PGSSLMODE=require pg_dump -d "host=${DB1_IP},${DB2_IP} dbname=evlocker user=evl_backup target_session_attrs=read-write connect_timeout=5" -Fc \
   | openssl enc -aes-256-cbc -pbkdf2 -salt -pass file:/etc/evlocker/backup.key -out "${OUT}.part"
 mv "${OUT}.part" "${OUT}"
 sha256sum "${OUT}" > "${OUT}.sha256"

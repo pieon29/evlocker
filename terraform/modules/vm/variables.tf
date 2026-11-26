@@ -19,7 +19,8 @@ variable "network_id" {
 }
 
 variable "ip_address" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "root_disk_size" {

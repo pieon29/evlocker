@@ -28,7 +28,7 @@ fi
 ufw --force reset
 ufw default deny incoming
 ufw default allow outgoing
-ufw allow from "${MGMT_CIDR}" to any port 22 proto tcp
-ufw allow from "${MGMT_CIDR}" to any port 9100 proto tcp
+ufw allow from "${MON_IP}" to any port 22 proto tcp
+ufw allow from "${MON_IP}" to any port 9100 proto tcp
 
 systemctl enable --now prometheus-node-exporter chrony

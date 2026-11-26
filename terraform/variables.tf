@@ -26,6 +26,16 @@ variable "name_prefix" {
   }
 }
 
+variable "shared_network_id" {
+  description = "ID of the Solid Cloud Shared Network (console: Network > Guest Networks > Shared Network)"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[0-9a-f-]{36}$", var.shared_network_id))
+    error_message = "shared_network_id must be the UUID shown in the console."
+  }
+}
+
 variable "zone_name" {
   description = "CloudStack zone"
   type        = string
@@ -36,18 +46,6 @@ variable "template_regex" {
   description = "Anchored regex for the featured template"
   type        = string
   default     = "^Ubuntu_24.04$"
-}
-
-variable "vpc_offering" {
-  description = "VPC offering name"
-  type        = string
-  default     = "Default VPC offering"
-}
-
-variable "tier_network_offering" {
-  description = "Network offering for VPC tiers"
-  type        = string
-  default     = "DefaultIsolatedNetworkOfferingForVpcNetworks"
 }
 
 variable "service_offering" {
@@ -67,26 +65,6 @@ variable "root_disk_size" {
   default     = 20
 }
 
-variable "vpc_cidr" {
-  type    = string
-  default = "192.168.0.0/16"
-}
-
-variable "web_cidr" {
-  type    = string
-  default = "192.168.10.0/24"
-}
-
-variable "data_cidr" {
-  type    = string
-  default = "192.168.20.0/24"
-}
-
-variable "mgmt_cidr" {
-  type    = string
-  default = "192.168.30.0/24"
-}
-
 variable "web_count" {
   description = "Number of web nodes"
   type        = number
@@ -98,30 +76,25 @@ variable "web_count" {
   }
 }
 
-variable "admin_cidrs" {
-  description = "Source CIDRs allowed to reach the bastion SSH port"
-  type        = list(string)
-  default     = ["10.0.0.0/16"]
-}
+variable "vm_mtu" {
+  description = "Guest NIC MTU and TCP MSS clamp base"
+  type        = number
+  default     = 1400
 
-variable "bastion_public_port" {
-  type    = number
-  default = 2222
-}
-
-variable "use_vr_lb" {
-  description = "Use the VPC virtual router load balancer for HTTPS; false falls back to port forwarding to web01"
-  type        = bool
-  default     = true
+  validation {
+    condition     = var.vm_mtu >= 1280 && var.vm_mtu <= 1500
+    error_message = "vm_mtu must be between 1280 and 1500."
+  }
 }
 
 variable "ssh_public_key_path" {
-  type    = string
-  default = "~/.ssh/id_ed25519.pub"
+  description = "Public key installed for the ubuntu user"
+  type        = string
+  default     = "~/.ssh/id_ed25519.pub"
 }
 
 variable "ssh_private_key_path" {
-  description = "Private key used only by Terraform provisioners to push secrets and run the bootstrap over the bastion"
+  description = "Private key used only by Terraform provisioners to push secrets and run the bootstrap"
   type        = string
   default     = "~/.ssh/id_ed25519"
 }
@@ -146,15 +119,4 @@ variable "app_domain" {
   description = "Hostname placed in the TLS certificate"
   type        = string
   default     = "evlocker.test"
-}
-
-variable "vm_mtu" {
-  description = "Guest NIC MTU. Path MTU inside the Solid Cloud VPC was measured at 1450, so 1400 leaves headroom"
-  type        = number
-  default     = 1400
-
-  validation {
-    condition     = var.vm_mtu >= 1280 && var.vm_mtu <= 1450
-    error_message = "vm_mtu must be between 1280 and 1450."
-  }
 }

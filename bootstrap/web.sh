@@ -16,7 +16,7 @@ systemctl restart docker
 
 umask 077
 cat > /etc/evlocker/app.env <<EOF
-DATABASE_URL=postgresql://evl_app:${DB_APP_PASSWORD}@${DB_VIP}:5432/evlocker?sslmode=require&connect_timeout=3
+DATABASE_URL=postgresql://evl_app:${DB_APP_PASSWORD}@${DB1_IP}:5432,${DB2_IP}:5432/evlocker?sslmode=require&connect_timeout=3&target_session_attrs=read-write
 APP_ENC_KEY=${APP_ENC_KEY}
 TOKEN_INVESTIGATOR=${TOKEN_INVESTIGATOR}
 TOKEN_AUDITOR=${TOKEN_AUDITOR}
@@ -27,8 +27,8 @@ umask 022
 install -m 0755 "${BOOT_DIR}/files/evl-app-deploy" /usr/local/bin/evl-app-deploy
 wait_for 30 /usr/local/bin/evl-app-deploy "${APP_IMAGE}"
 
-export MGMT_CIDR APP_DOMAIN
-render "${BOOT_DIR}/files/nginx-evlocker.conf" /etc/nginx/sites-available/evlocker '${MGMT_CIDR} ${APP_DOMAIN}'
+export MON_IP APP_DOMAIN
+render "${BOOT_DIR}/files/nginx-evlocker.conf" /etc/nginx/sites-available/evlocker '${MON_IP} ${APP_DOMAIN}'
 ln -sf /etc/nginx/sites-available/evlocker /etc/nginx/sites-enabled/evlocker
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
@@ -41,7 +41,7 @@ EOF
 systemctl enable --now prometheus-nginx-exporter
 systemctl restart prometheus-nginx-exporter
 
-ufw allow 80/tcp
-ufw allow 443/tcp
-ufw allow from "${MGMT_CIDR}" to any port 9113 proto tcp
+ufw allow from "${MON_IP}" to any port 80 proto tcp
+ufw allow from "${MON_IP}" to any port 443 proto tcp
+ufw allow from "${MON_IP}" to any port 9113 proto tcp
 ufw --force enable
