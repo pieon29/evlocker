@@ -1,0 +1,38 @@
+evl-bastion 10.0.13.35 open_from_outside: 22 80 443
+evl-db01 10.0.13.33 open_from_outside: none
+evl-db02 10.0.13.39 open_from_outside: none
+evl-web01 10.0.13.34 open_from_outside: none
+evl-web02 10.0.13.48 open_from_outside: 22
+== host firewall rules
+-- bastion
+22/tcp                     ALLOW       10.0.13.35                
+9100/tcp                   ALLOW       10.0.13.35                
+22/tcp                     ALLOW       Anywhere                  
+80/tcp                     ALLOW       Anywhere                  
+443/tcp                    ALLOW       Anywhere                  
+9100/tcp                   ALLOW       172.30.0.0/24             
+514/tcp                    ALLOW       10.0.13.34                
+514/tcp                    ALLOW       10.0.13.48                
+514/tcp                    ALLOW       10.0.13.33                
+514/tcp                    ALLOW       10.0.13.39                
+22/tcp (v6)                ALLOW       Anywhere (v6)             
+80/tcp (v6)                ALLOW       Anywhere (v6)             
+443/tcp (v6)               ALLOW       Anywhere (v6)             
+
+-- web01
+22/tcp                     ALLOW       10.0.13.35                
+9100/tcp                   ALLOW       10.0.13.35                
+80/tcp                     ALLOW       10.0.13.35                
+443/tcp                    ALLOW       10.0.13.35                
+8443/tcp                   ALLOW       10.0.13.35                
+9113/tcp                   ALLOW       10.0.13.35                
+
+-- db01
+22/tcp                     ALLOW       10.0.13.35                
+9100/tcp                   ALLOW       10.0.13.35                
+5432/tcp                   ALLOW       10.0.13.34                
+5432/tcp                   ALLOW       10.0.13.48                
+5432/tcp                   ALLOW       10.0.13.35                
+5432/tcp                   ALLOW       10.0.13.39                
+9187/tcp                   ALLOW       10.0.13.35                
+

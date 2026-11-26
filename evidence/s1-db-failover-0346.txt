@@ -1,0 +1,15 @@
+== before
+db01 recovery=f evidence_rows=4581 custody_rows=59461 wal=0/6BEBCE8
+db02 recovery=t replay=0/6BEBCE8
+[03:47:17.635] db01: stop postgresql (primary failure)
+[03:47:25.209] db02 promoted to primary
+promotion_seconds=7.6
+saved /c/Users/pieon/evlocker/evidence/db-failover-1127-034655.csv
+requests=127 failed=2 availability=98.425%
+first_fail_ms=1795718839375 last_fail_ms=1795718842243 outage_window_s=2.9
+== after
+db02 recovery=f evidence_rows=4581 custody_rows=59461
+== failover log (db02)
+2026-11-26T18:47:24+00:00 db02 Keepalived_vrrp[10763]: (EVL_DB) Entering MASTER STATE
+2026-11-26T18:47:24+00:00 db02 evl-failover[14754]: node=db02 promoting standby to primary (peer=unreachable)
+2026-11-26T18:47:25+00:00 db02 evl-failover[14811]: node=db02 promote finished

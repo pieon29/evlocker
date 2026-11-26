@@ -26,3 +26,8 @@
 | 6 | bootcmd에서 `netplan apply` 실행, netplan 파일로 MTU 고정 | 부팅 중 교착으로 SSH 키 미적용, 이어서 netplan 설정 충돌로 네트워크 소실 | 콘솔 화면 `netplan failed`, 로그인 불가 | netplan 방식 폐기 |
 | 7 | 모든 설정과 시크릿을 user-data 하나에 담는 설계 | 일부 VM이 부팅 초반 큰 user-data를 받지 못함. 또 user-data는 VM 안에서 인증 없이 조회 가능해 시크릿 보관 위치로 부적절 | 콘솔 호스트명 비교, 라우터 user-data 대리 조회 | user-data 최소화 + provisioner로 시크릿 전달 |
 | 8 | VPC 라우터(VR)의 DHCP·user-data 전달 실패를 매번 설정 문제로 보고 MTU·netplan·user-data 크기 조정을 반복 제안 | 같은 정의에서 VM마다 결과가 달라지는 플랫폼 쪽 불안정이었고, 학생 권한으로는 라우터를 진단할 수 없음 | 7번 조치 후에도 다른 VM(mon01)에서 같은 증상 재현 | 원인 추적을 멈추고 Shared Network로 전환, 결정 근거와 트레이드오프를 리포트에 기록 |
+| 9 | 백업 파일 보호를 위해 백업 스크립트 전체에 `umask 077` 적용을 제안 | 같은 스크립트가 만드는 지표 파일까지 root 전용이 되어 node-exporter가 읽지 못함. 그대로 두면 30분 뒤 "백업 중단" 오경보 | Grafana "Last backup age" No data, 지표 파일 권한 `-rw-------` | 지표 파일만 0644로 교체. 이후 변경 시 해당 파일을 읽는 다른 프로세스를 먼저 확인하도록 절차화 |
+| 10 | HAProxy를 TCP 모드로 두고 Nginx에서 접속자별 요청 제한을 거는 설계 | LB 뒤에서는 모든 요청의 출발지가 mon01 하나라, 제한이 전체 제한으로 동작하고 접속기록에 실제 IP가 남지 않으며 /metrics 접근 통제도 무력화 | stress 테스트 실패율 76% + 노드별 요청 수가 50 req/s에서 평평 | PROXY protocol v2, 모니터링 포트 분리 |
+| 11 | 포트 점검 스크립트(Git Bash의 timeout + /dev/tcp) 결과를 그대로 신뢰 | web02:22를 열림으로 잘못 판정(오탐) | ufw·iptables 규칙 확인과 PC에서 직접 SSH 시도로 교차 검증 | 결과를 단독 근거로 쓰지 않고 교차 검증 결과를 함께 기록 |
+| 12 | probe 요약의 `outage_window_s`(첫 실패~마지막 실패 간격)를 중단 시간처럼 제시하고, 실패 시각 추출 awk 명령도 첫 행 실패 시 기준값이 비는 버그가 있었음 | 두 번의 짧은 중단 사이 간격(65.8초)이 중단 시간처럼 보임 | 실패 시각을 직접 뽑아 보고, HAProxy 로그와 대조 | 보고서에는 실패 건수와 서버 로그 기준 원인만 사용 |
+

@@ -1,0 +1,4 @@
+/srv/backup/dumps/evlocker-20261126T185038Z.dump.enc: OK
+evidence_rows=4581
+custody_rows=59461
+restore_seconds=7

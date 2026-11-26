@@ -1,0 +1,27 @@
+[03:19:50] phase 1: token brute force with 60 forged tokens
+     60 401
+[03:20:04] phase 2: flood 300 req/s for 10s with forged tokens (rate limit)
+    status_401...........: 1197    119.55021/s
+    status_429...........: 1804    180.174251/s
+    http_reqs............: 3001    299.72446/s
+[03:20:15] detection: auth failures seen by the app (prometheus)
+1290.7500771929824
+[03:20:36] detection: alert state
+AuthFailureBurst firing
+[03:20:36] tracing: source IPs in central log on mon01
+   1257 remote=10.0.0.10
+     20 remote=127.0.0.1
+attacker_ip=10.0.0.10
+rate-limited (429) in nginx log: 33521 on web01, 30962 on web02
+[03:20:40] response: block 10.0.0.10 on edge 443/80 (ssh stays open)
+Rule inserted
+Rule inserted
+after block: 000
+after block: connection dropped
+[ 1] 80/tcp                     DENY IN     10.0.0.10                 
+[ 2] 443/tcp                    DENY IN     10.0.0.10                 
+[03:20:46] recovery: remove block
+Rule deleted
+Rule deleted
+after unblock: 200
+edge=10.0.13.35

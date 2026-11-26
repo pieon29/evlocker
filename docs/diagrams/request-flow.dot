@@ -1,0 +1,23 @@
+digraph G {
+  graph [rankdir=TB, fontname="NanumGothic", fontsize=13, labelloc=t, label="그림 2. 요청 처리 워크플로우 (증거 조회 요청 1건 기준)", bgcolor="white", pad=0.3, nodesep=0.3];
+  node [fontname="NanumGothic", fontsize=10.5, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge [fontname="NanumGothic", fontsize=9, color="#444444"];
+
+  c [label="① 클라이언트\nGET /api/evidence/{id}\nAuthorization: Bearer 토큰", fillcolor="#eef2f7"];
+  h [label="② HAProxy (mon01)\n· 정상 서버만 라운드로빈\n· 원래 접속 IP를 PROXY v2로 전달", fillcolor="#fff4e0"];
+  n [label="③ Nginx (web)\n· TLS 종료\n· 실제 IP 복원 (set_real_ip_from mon01)\n· 접속자별 50 r/s 제한 → 초과 시 429\n· 접속기록 → 중앙 로그", fillcolor="#e8f0fb"];
+  a [label="④ App (gunicorn)\n· 토큰 검증 → 실패 시 401 + 인증 실패 지표\n· 역할 확인 (수사관 / 감사관)", fillcolor="#e8f0fb"];
+  d [label="⑤ PostgreSQL (주 DB)\n· 조회 + 열람 이력(custody) 추가\n· 이력은 해시 체인 · 수정/삭제 차단 트리거", fillcolor="#e6f4ea"];
+  r [label="⑥ 응답\n메타데이터 (SHA-256 포함)\n본문은 AES-256-GCM 암호문 저장\nX-Served-By: web0N", fillcolor="#eef2f7"];
+
+  c -> h [label="HTTPS"];
+  h -> n [label="TCP + PROXY v2"];
+  n -> a [label="127.0.0.1:8000"];
+  a -> d [label="TLS, scram-sha-256"];
+  d -> a [style=dashed];
+  a -> r [style=dashed];
+
+  m [label="관측\nPrometheus (요청 수·지연·인증 실패)\nGrafana 대시보드 · 경보 규칙", shape=note, fillcolor="#f7f7f7"];
+  n -> m [style=dotted];
+  a -> m [style=dotted];
+}

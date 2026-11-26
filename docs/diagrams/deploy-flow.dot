@@ -1,0 +1,29 @@
+digraph G {
+  graph [rankdir=TB, fontname="NanumGothic", fontsize=13, labelloc=t, label="그림 3. 배포 워크플로우 (코드 → CI 검증 → Terraform → 노드 부트스트랩)", bgcolor="white", pad=0.3, nodesep=0.3, ranksep=0.35];
+  node [fontname="NanumGothic", fontsize=10.5, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge [fontname="NanumGothic", fontsize=9, color="#444444"];
+
+  dev [label="개발자 git push (main)", fillcolor="#eef2f7"];
+
+  subgraph cluster_ci {
+    label="GitHub Actions CI  (병렬 3개 작업이 모두 통과해야 이미지 작업 실행)"; style="rounded"; color="#4a7bb7"; fontsize=11;
+    s1 [label="iac\nterraform fmt · validate\ntflint · trivy config · checkov\nconftest (Rego EVL-001~007)"];
+    s2 [label="secrets\ngitleaks"];
+    s3 [label="app\npytest\n(PostgreSQL 16 서비스)"];
+    s4 [label="image (needs: iac, secrets, app)\n빌드 → Trivy 취약점 게이트 → GHCR 푸시 (sha-커밋)"];
+    { rank=same; s1; s2; s3; }
+  }
+
+  tf [label="운영자: terraform apply\n(repo_ref = 검증된 커밋, app_image = 검증된 태그)", fillcolor="#fff4e0"];
+  vm [label="VM 생성 (CloudStack)\nuser-data 최소화: 호스트명 · SSH 키 · MTU/MSS 규칙\n(시크릿 없음)"];
+  pv [label="terraform_data 프로비저너 (mon01 경유 SSH)\n· node.env (0600) · TLS 인증서 전달\n· git clone + checkout repo_ref"];
+  bs [label="bootstrap/run.sh\ncommon: SSH 강화 · ufw /32 · 중앙 로그 · node-exporter\n역할별: web / db / mon"];
+  ok [label="완료 표시 (/var/lib/evlocker-bootstrap.done)\n→ check-all.sh 로 상태 점검", fillcolor="#e6f4ea"];
+
+  dev -> s1; dev -> s2; dev -> s3;
+  s1 -> s4; s2 -> s4; s3 -> s4;
+  s4 -> tf [label="CI 통과 확인"];
+  tf -> vm -> pv -> bs -> ok;
+  roll [label="설정 변경 시 (예: api_rate_limit)\n바뀐 노드만 재부트스트랩\n-parallelism=1 → 한 대씩 롤링", shape=note, fillcolor="#f7f7f7"];
+  tf -> roll [style=dotted, arrowhead=none];
+}

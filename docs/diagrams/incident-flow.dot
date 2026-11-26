@@ -1,0 +1,27 @@
+digraph G {
+  graph [rankdir=TB, fontname="NanumGothic", fontsize=13, labelloc=t, label="그림 4. 장애·보안 사고 대응 워크플로우 (S1 DB 장애 / S4 토큰 대입 공격, 실측 시각)", bgcolor="white", pad=0.3, nodesep=0.25, ranksep=0.45];
+  node [fontname="NanumGothic", fontsize=10, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge [fontname="NanumGothic", fontsize=9, color="#444444"];
+
+  subgraph cluster_s1 {
+    label="S1. 주 DB 장애 (자동 대응)"; style="rounded"; color="#3c8d5a"; fontsize=11;
+    a1 [label="발생 03:47:17.6\ndb01 PostgreSQL 중지", fillcolor="#fde8e8"];
+    a2 [label="탐지\nKeepalived chk_pg\n2초 × 3회 실패"];
+    a3 [label="판단\n피어(db01)가 아직\n주 DB인지 확인\n→ unreachable", fillcolor="#fff4e0"];
+    a4 [label="조치 03:47:25.2\ndb02 승격\nRTO 7.6초"];
+    a5 [label="자동 복구\n앱 멀티호스트 재연결\n백업·WAL 수집도 db02 추종"];
+    a6 [label="정상화 (수동)\nevl-db-rejoin\ndb01 → 복제본 재합류\nRPO 0건", fillcolor="#e6f4ea"];
+    a1 -> a2 -> a3 -> a4 -> a5 -> a6;
+  }
+
+  subgraph cluster_s4 {
+    label="S4. 위조 토큰 대입 · 요청 폭주 (탐지 자동, 차단 운영자)"; style="rounded"; color="#b33c3c"; fontsize=11;
+    b1 [label="발생 03:19:50\n위조 토큰 60건\n+ 300 r/s 폭주", fillcolor="#fde8e8"];
+    b2 [label="자동 방어\n401 거부\n429 제한 1,804건"];
+    b3 [label="탐지 03:20:36\nAuthFailureBurst\n경보 firing"];
+    b4 [label="추적\n중앙 로그에서\n공격 IP 10.0.0.10\n(실제 IP 기록 덕분)", fillcolor="#fff4e0"];
+    b5 [label="차단 03:20:40\nmon01 ufw\n해당 IP 80/443 거부"];
+    b6 [label="복구 03:20:46\n차단 해제\n(실제 운영: 토큰 폐기\n→ terraform -replace)", fillcolor="#e6f4ea"];
+    b1 -> b2 -> b3 -> b4 -> b5 -> b6;
+  }
+}

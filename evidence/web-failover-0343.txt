@@ -1,0 +1,19 @@
+[03:43:48.245] web01: stop nginx
+[03:43:58.281] haproxy view
+be_https,web01,DOWN
+be_https,web02,UP
+[03:44:20.849] web01: start nginx
+[03:44:29.839] haproxy view
+be_https,web01,UP
+be_https,web02,UP
+saved /c/Users/pieon/evlocker/evidence/web-failover-1127-034333.csv
+requests=96 failed=1 availability=98.958%
+first_fail_ms=1795718631358 last_fail_ms=1795718631358 outage_window_s=0.0
+== served by
+web01 25
+web02 70
+== haproxy log (state changes)
+2026-11-26T18:44:25.119890+00:00 mon01-32191170 haproxy[11329]: [WARNING]  (11329) : Server be_https/web01 is UP, reason: Layer7 check passed, code: 200, check duration: 7ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.
+2026-11-26T18:44:25.120055+00:00 mon01-32191170 haproxy[11329]: Server be_https/web01 is UP, reason: Layer7 check passed, code: 200, check duration: 7ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.
+2026-11-26T18:44:25.512782+00:00 mon01-32191170 haproxy[11329]: [WARNING]  (11329) : Server be_http/web01 is UP, reason: Layer4 check passed, check duration: 1ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.
+2026-11-26T18:44:25.512907+00:00 mon01-32191170 haproxy[11329]: Server be_http/web01 is UP, reason: Layer4 check passed, check duration: 1ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.

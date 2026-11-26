@@ -1,359 +1,379 @@
 {
- "title": "evlocker overview",
- "uid": "evl-overview",
- "schemaVersion": 39,
- "time": {
-  "from": "now-1h",
-  "to": "now"
- },
- "refresh": "10s",
- "panels": [
-  {
-   "type": "stat",
-   "title": "Availability 5m",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 0,
-    "w": 6,
-    "h": 4
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "evl:availability:ratio_rate5m"
-    }
-   ],
-   "id": 1
+  "title": "evlocker overview",
+  "uid": "evl-overview",
+  "schemaVersion": 39,
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  {
-   "type": "stat",
-   "title": "p95 latency 5m",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 6,
-    "y": 0,
-    "w": 6,
-    "h": 4
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
-    },
-    "overrides": []
-   },
-   "targets": [
+  "refresh": "10s",
+  "panels": [
     {
-     "refId": "A",
-     "expr": "evl:latency_p95_seconds:5m"
+      "type": "stat",
+      "title": "Availability 5m",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "evl:availability:ratio_rate5m"
+        }
+      ],
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "p95 latency 5m",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "evl:latency_p95_seconds:5m"
+        }
+      ],
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "Edge probe success 1h",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "evl:edge_probe_success:ratio_1h"
+        }
+      ],
+      "id": 3
+    },
+    {
+      "type": "stat",
+      "title": "Last backup age",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 960
+              },
+              {
+                "color": "red",
+                "value": 1800
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "time() - max(evl_backup_last_success_timestamp_seconds{kind=\"dump\"})"
+        }
+      ],
+      "id": 4
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests per second by node",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node) (rate(evl_http_requests_total[1m]))",
+          "legendFormat": "{{node}}"
+        }
+      ],
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "Responses by status",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (status) (rate(evl_http_requests_total[1m]))",
+          "legendFormat": "{{status}}"
+        }
+      ],
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency p50 / p95 / p99",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
+          "legendFormat": "p99"
+        }
+      ],
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "Probe success",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "probe_success",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "id": 8
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU busy by node",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "1 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m]))",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "id": 9
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory used by node",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "id": 10
+    },
+    {
+      "type": "timeseries",
+      "title": "DB connections / replication lag",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (instance) (pg_stat_activity_count)",
+          "legendFormat": "conn {{instance}}"
+        },
+        {
+          "refId": "B",
+          "expr": "max by (instance) (pg_replication_lag_seconds or pg_replication_lag)",
+          "legendFormat": "lag {{instance}}"
+        }
+      ],
+      "id": 11
+    },
+    {
+      "type": "timeseries",
+      "title": "Auth failures",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (node) (increase(evl_auth_failures_total[5m]))",
+          "legendFormat": "{{node}}"
+        }
+      ],
+      "id": 12
     }
-   ],
-   "id": 2
-  },
-  {
-   "type": "stat",
-   "title": "Edge probe success 1h",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 0,
-    "w": 6,
-    "h": 4
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "evl:edge_probe_success:ratio_1h"
-    }
-   ],
-   "id": 3
-  },
-  {
-   "type": "stat",
-   "title": "Last backup age",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 18,
-    "y": 0,
-    "w": 6,
-    "h": 4
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "time() - max(evl_backup_last_success_timestamp_seconds{kind=\"dump\"})"
-    }
-   ],
-   "id": 4
-  },
-  {
-   "type": "timeseries",
-   "title": "Requests per second by node",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 4,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "reqps"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (node) (rate(evl_http_requests_total[1m]))",
-     "legendFormat": "{{node}}"
-    }
-   ],
-   "id": 5
-  },
-  {
-   "type": "timeseries",
-   "title": "Responses by status",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 4,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "reqps"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (status) (rate(evl_http_requests_total[1m]))",
-     "legendFormat": "{{status}}"
-    }
-   ],
-   "id": 6
-  },
-  {
-   "type": "timeseries",
-   "title": "Latency p50 / p95 / p99",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 12,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "histogram_quantile(0.5, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
-     "legendFormat": "p50"
-    },
-    {
-     "refId": "B",
-     "expr": "histogram_quantile(0.95, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
-     "legendFormat": "p95"
-    },
-    {
-     "refId": "C",
-     "expr": "histogram_quantile(0.99, sum by (le) (rate(evl_http_request_duration_seconds_bucket[1m])))",
-     "legendFormat": "p99"
-    }
-   ],
-   "id": 7
-  },
-  {
-   "type": "timeseries",
-   "title": "Probe success",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 12,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "probe_success",
-     "legendFormat": "{{instance}}"
-    }
-   ],
-   "id": 8
-  },
-  {
-   "type": "timeseries",
-   "title": "CPU busy by node",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 20,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "1 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m]))",
-     "legendFormat": "{{instance}}"
-    }
-   ],
-   "id": 9
-  },
-  {
-   "type": "timeseries",
-   "title": "Memory used by node",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 20,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes",
-     "legendFormat": "{{instance}}"
-    }
-   ],
-   "id": 10
-  },
-  {
-   "type": "timeseries",
-   "title": "DB connections / replication lag",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 28,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (instance) (pg_stat_activity_count)",
-     "legendFormat": "conn {{instance}}"
-    },
-    {
-     "refId": "B",
-     "expr": "max by (instance) (pg_replication_lag_seconds or pg_replication_lag)",
-     "legendFormat": "lag {{instance}}"
-    }
-   ],
-   "id": 11
-  },
-  {
-   "type": "timeseries",
-   "title": "Auth failures",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 28,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "sum by (node) (increase(evl_auth_failures_total[5m]))",
-     "legendFormat": "{{node}}"
-    }
-   ],
-   "id": 12
-  }
- ]
+  ]
 }
