@@ -1,73 +1,8 @@
-[04:19:20] before rotation: old_token=200
-[04:19:20] terraform apply -replace=random_password.token_investigator (confirm with yes)
-[0m[1mtls_private_key.web: Refreshing state... [id=5cb4ca56fca021abdc4f96a1b0f288c87cd5437d][0m
-[0m[1mrandom_id.app_enc_key: Refreshing state... [id=C3TP92ukq_M_HMxVyviyAKO9lAQ8431PPNmiCpUubn8][0m
-[0m[1mrandom_password.vrrp: Refreshing state... [id=none][0m
-[0m[1mrandom_password.console: Refreshing state... [id=none][0m
-[0m[1mrandom_password.token_auditor: Refreshing state... [id=none][0m
-[0m[1mrandom_password.token_investigator: Refreshing state... [id=none][0m
-[0m[1mrandom_password.db_replication: Refreshing state... [id=none][0m
-[0m[1mrandom_password.db_backup: Refreshing state... [id=none][0m
-[0m[1mrandom_password.grafana_admin: Refreshing state... [id=none][0m
-[0m[1mrandom_password.db_app: Refreshing state... [id=none][0m
-[0m[1mdata.cloudstack_zone.this: Reading...[0m[0m
-[0m[1mdata.cloudstack_zone.this: Read complete after 0s [id=7b9de49f-6879-4b4e-8c0c-13f7ff0a86d4][0m
-[0m[1mdata.cloudstack_template.ubuntu: Reading...[0m[0m
-[0m[1mdata.cloudstack_template.ubuntu: Read complete after 0s [id=5e526193-3f7d-4929-bf6b-bc3360f2a3d8][0m
-[0m[1mdata.cloudstack_service_offering.node: Reading...[0m[0m
-[0m[1mdata.cloudstack_service_offering.node: Read complete after 0s [id=aef579fb-925b-4ef3-afa4-1aa72a3903ba][0m
-[0m[1mterraform_data.ssh_key_check: Refreshing state... [id=d4a8f29f-5844-3595-ad83-15753c5f8f2f][0m
-[0m[1mmodule.node["web01"].cloudstack_instance.this: Refreshing state... [id=3fa8dd8d-1cb0-4489-b64d-c2c99ce370f4][0m
-[0m[1mmodule.node["db01"].cloudstack_instance.this: Refreshing state... [id=3c6dcf2f-e081-4114-9d31-e52492eb1745][0m
-[0m[1mmodule.node["web02"].cloudstack_instance.this: Refreshing state... [id=f9791a41-456c-4e7d-a649-d1de6d476b72][0m
-[0m[1mmodule.node["db02"].cloudstack_instance.this: Refreshing state... [id=19057789-1335-49b7-ba93-b0c1faffb5fa][0m
-[0m[1mmodule.node["mon01"].cloudstack_instance.this: Refreshing state... [id=c3330b6e-f56a-489f-ba2d-d2265f06130e][0m
-[0m[1mtls_self_signed_cert.web: Refreshing state... [id=195876455030712745951792345786663397819][0m
-[0m[1mterraform_data.bootstrap["mon01"]: Refreshing state... [id=ad388fd2-67d6-d666-a792-543d8791ae82][0m
-[0m[1mterraform_data.bootstrap["web02"]: Refreshing state... [id=d11646b8-53f2-5ab1-1ff7-8716c65e938c][0m
-[0m[1mterraform_data.bootstrap["web01"]: Refreshing state... [id=f60ebe9c-36b9-329c-be44-730ff60cff0c][0m
-[0m[1mterraform_data.bootstrap["db01"]: Refreshing state... [id=1232b63b-48f9-4f94-1114-24068be35bad][0m
-[0m[1mterraform_data.bootstrap["db02"]: Refreshing state... [id=a5afae8c-d7b8-c9c1-b8f1-6f48191a514c][0m
-
-Terraform used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
-[31m-[0m/[32m+[0m destroy and then create replacement[0m
-
-Terraform will perform the following actions:
-
-[1m  # random_password.token_investigator[0m will be [1m[31mreplaced[0m, as requested
-[0m[31m-[0m/[32m+[0m[0m resource "random_password" "token_investigator" {
-      [33m~[0m[0m bcrypt_hash = (sensitive value)
-      [33m~[0m[0m id          = "none" -> (known after apply)
-      [33m~[0m[0m result      = (sensitive value)
-        [90m# (10 unchanged attributes hidden)[0m[0m
-    }
-
-[1m  # terraform_data.bootstrap["web01"][0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "terraform_data" "bootstrap" {
-      [33m~[0m[0m id               = "f60ebe9c-36b9-329c-be44-730ff60cff0c" -> (known after apply)
-      [33m~[0m[0m triggers_replace = {
-          [33m~[0m[0m env      = (sensitive value)
-            [90m# (3 unchanged attributes hidden)[0m[0m
-        }
-    }
-
-[1m  # terraform_data.bootstrap["web02"][0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "terraform_data" "bootstrap" {
-      [33m~[0m[0m id               = "d11646b8-53f2-5ab1-1ff7-8716c65e938c" -> (known after apply)
-      [33m~[0m[0m triggers_replace = {
-          [33m~[0m[0m env      = (sensitive value)
-            [90m# (3 unchanged attributes hidden)[0m[0m
-        }
-    }
-
-[1mPlan:[0m [0m3 to add, 0 to change, 3 to destroy.
-
-Changes to Outputs:
-  [33m~[0m[0m token_investigator     = (sensitive value)
-[0m[1m
-Do you want to perform these actions?[0m
-  Terraform will perform the actions described above.
-  Only 'yes' will be accepted to approve.
-
-  [1mEnter a value:[0m [0m
+[04:20:33] before rotation: old_token=200
+Apply complete! Resources: 3 added, 0 changed, 3 destroyed.
+[04:21:23] apply finished in 50s
+token changed
+[04:21:23] after rotation: old_token=401 new_token=200
+saved evidence/token-rotation-1127-042033.csv
+requests=361 failed=4 availability=98.892%
+first_fail_ms=1795720876630 last_fail_ms=1795720878773 outage_window_s=2.1
