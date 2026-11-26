@@ -141,7 +141,7 @@
 <path fill="#fff4e0" stroke="#555555" d="M360,-225C360,-225 284,-225 284,-225 278,-225 272,-219 272,-213 272,-213 272,-185 272,-185 272,-179 278,-173 284,-173 284,-173 360,-173 360,-173 366,-173 372,-179 372,-185 372,-185 372,-213 372,-213 372,-219 366,-225 360,-225"/>
 <text text-anchor="middle" x="322" y="-213" font-family="NanumGothic" font-size="10.00">추적</text>
 <text text-anchor="middle" x="322" y="-202" font-family="NanumGothic" font-size="10.00">중앙 로그에서</text>
-<text text-anchor="middle" x="322" y="-191" font-family="NanumGothic" font-size="10.00">공격 IP 10.0.0.10</text>
+<text text-anchor="middle" x="322" y="-191" font-family="NanumGothic" font-size="10.00">공격 IP 1개 특정</text>
 <text text-anchor="middle" x="322" y="-180" font-family="NanumGothic" font-size="10.00">(실제 IP 기록 덕분)</text>
 </g>
 <!-- b3&#45;&gt;b4 -->

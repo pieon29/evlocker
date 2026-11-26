@@ -3,7 +3,7 @@ digraph G {
   node [fontname="NanumGothic", fontsize=11, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
   edge [fontname="NanumGothic", fontsize=9, color="#555555"];
 
-  user [label="사용자 / 운영자\n(OpenVPN, 10.0.0.10)", shape=box, fillcolor="#eef2f7"];
+  user [label="사용자 / 운영자\n(OpenVPN 접속)", shape=box, fillcolor="#eef2f7"];
 
   subgraph cluster_net {
     label="Shared Network (단일 L2, 분리는 호스트 방화벽 /32 규칙으로 구현)"; style="rounded,dashed"; color="#888888"; fontsize=11;

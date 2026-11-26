@@ -19,7 +19,7 @@ digraph G {
     b1 [label="발생 03:19:50\n위조 토큰 60건\n+ 300 r/s 폭주", fillcolor="#fde8e8"];
     b2 [label="자동 방어\n401 거부\n429 제한 1,804건"];
     b3 [label="탐지 03:20:36\nAuthFailureBurst\n경보 firing"];
-    b4 [label="추적\n중앙 로그에서\n공격 IP 10.0.0.10\n(실제 IP 기록 덕분)", fillcolor="#fff4e0"];
+    b4 [label="추적\n중앙 로그에서\n공격 IP 1개 특정\n(실제 IP 기록 덕분)", fillcolor="#fff4e0"];
     b5 [label="차단 03:20:40\nmon01 ufw\n해당 IP 80/443 거부"];
     b6 [label="복구 03:20:46\n차단 해제\n(실제 운영: 토큰 폐기\n→ terraform -replace)", fillcolor="#e6f4ea"];
     b1 -> b2 -> b3 -> b4 -> b5 -> b6;

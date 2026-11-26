@@ -28,9 +28,9 @@
 <!-- user -->
 <g id="node1" class="node">
 <title>user</title>
-<path fill="#eef2f7" stroke="#555555" d="M256,-647C256,-647 150,-647 150,-647 144,-647 138,-641 138,-635 138,-635 138,-623 138,-623 138,-617 144,-611 150,-611 150,-611 256,-611 256,-611 262,-611 268,-617 268,-623 268,-623 268,-635 268,-635 268,-641 262,-647 256,-647"/>
+<path fill="#eef2f7" stroke="#555555" d="M240,-647C240,-647 166,-647 166,-647 160,-647 154,-641 154,-635 154,-635 154,-623 154,-623 154,-617 160,-611 166,-611 166,-611 240,-611 240,-611 246,-611 252,-617 252,-623 252,-623 252,-635 252,-635 252,-641 246,-647 240,-647"/>
 <text text-anchor="middle" x="203" y="-632.2" font-family="NanumGothic" font-size="11.00">사용자 / 운영자</text>
-<text text-anchor="middle" x="203" y="-620.2" font-family="NanumGothic" font-size="11.00">(OpenVPN, 10.0.0.10)</text>
+<text text-anchor="middle" x="203" y="-620.2" font-family="NanumGothic" font-size="11.00">(OpenVPN 접속)</text>
 </g>
 <!-- mon -->
 <g id="node2" class="node">
