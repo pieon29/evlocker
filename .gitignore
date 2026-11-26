@@ -21,3 +21,4 @@ __pycache__/
 node_modules/
 evidence/raw/
 ci-*.txt
+diag-*.txt

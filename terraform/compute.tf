@@ -97,6 +97,7 @@ module "node" {
 
   user_data = templatefile("${path.module}/templates/cloud-init.yaml.tftpl", {
     hostname         = each.key
+    mtu              = var.vm_mtu
     ssh_public_key   = local.ssh_public_key
     console_password = random_password.console.result
     env_b64          = base64encode(join("\n", concat([for k, v in merge(each.value.env, { NODE_NAME = each.key, NODE_IP = each.value.ip }) : "${k}='${v}'"], [""])))

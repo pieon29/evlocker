@@ -1,6 +1,8 @@
 #cloud-config
 hostname: ${hostname}
 manage_etc_hosts: true
+bootcmd:
+  - [sh, -c, "for i in $(ls /sys/class/net | grep -v '^lo$'); do ip link set dev $i mtu ${mtu}; done"]
 ssh_pwauth: false
 disable_root: true
 chpasswd:

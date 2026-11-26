@@ -141,3 +141,14 @@ variable "app_domain" {
   type        = string
   default     = "evlocker.test"
 }
+
+variable "vm_mtu" {
+  description = "Guest NIC MTU. Path MTU inside the Solid Cloud VPC was measured at 1450, so 1400 leaves headroom"
+  type        = number
+  default     = 1400
+
+  validation {
+    condition     = var.vm_mtu >= 1280 && var.vm_mtu <= 1450
+    error_message = "vm_mtu must be between 1280 and 1450."
+  }
+}
