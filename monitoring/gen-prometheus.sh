@@ -16,7 +16,7 @@ ALL=("${WEBS[@]}" "${DBS[@]}" "${MON_IP}")
 
 web_probe=""
 for ip in "${WEBS[@]}"; do
-  web_probe="${web_probe}'https://${ip}/healthz', "
+  web_probe="${web_probe}'https://${ip}:8443/healthz', "
 done
 
 cat <<YAML
@@ -42,7 +42,7 @@ scrape_configs:
       ca_file: /etc/prometheus/edge-ca.crt
       server_name: ${APP_DOMAIN}
     static_configs:
-      - targets: $(list 443 "${WEBS[@]}")
+      - targets: $(list 8443 "${WEBS[@]}")
 
   - job_name: postgres
     static_configs:

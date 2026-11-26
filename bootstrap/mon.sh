@@ -103,6 +103,7 @@ systemctl start evl-backup-dump.service || true
 ufw allow 22/tcp
 ufw allow 80/tcp
 ufw allow 443/tcp
+ufw allow from 172.30.0.0/24 to any port 9100 proto tcp
 for ip in ${WEB_IPS} "${DB1_IP}" "${DB2_IP}"; do
   ufw allow from "${ip}" to any port 514 proto tcp
 done

@@ -17,6 +17,7 @@ locals {
   role_env = {
     web = {
       APP_IMAGE          = var.app_image
+      API_RATE_LIMIT     = tostring(var.api_rate_limit)
       DB_APP_PASSWORD    = random_password.db_app.result
       APP_ENC_KEY        = random_id.app_enc_key.b64_std
       TOKEN_INVESTIGATOR = random_password.token_investigator.result

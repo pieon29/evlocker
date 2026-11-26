@@ -115,6 +115,17 @@ variable "app_image" {
   type        = string
 }
 
+variable "api_rate_limit" {
+  description = "Per-client request rate limit on /api/ in requests per second"
+  type        = number
+  default     = 50
+
+  validation {
+    condition     = var.api_rate_limit >= 1 && var.api_rate_limit <= 5000
+    error_message = "api_rate_limit must be between 1 and 5000."
+  }
+}
+
 variable "app_domain" {
   description = "Hostname placed in the TLS certificate"
   type        = string

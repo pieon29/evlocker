@@ -27,8 +27,8 @@ umask 022
 install -m 0755 "${BOOT_DIR}/files/evl-app-deploy" /usr/local/bin/evl-app-deploy
 wait_for 30 /usr/local/bin/evl-app-deploy "${APP_IMAGE}"
 
-export MON_IP APP_DOMAIN
-render "${BOOT_DIR}/files/nginx-evlocker.conf" /etc/nginx/sites-available/evlocker '${MON_IP} ${APP_DOMAIN}'
+export MON_IP APP_DOMAIN API_RATE_LIMIT
+render "${BOOT_DIR}/files/nginx-evlocker.conf" /etc/nginx/sites-available/evlocker '${MON_IP} ${APP_DOMAIN} ${API_RATE_LIMIT}'
 ln -sf /etc/nginx/sites-available/evlocker /etc/nginx/sites-enabled/evlocker
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
@@ -43,5 +43,6 @@ systemctl restart prometheus-nginx-exporter
 
 ufw allow from "${MON_IP}" to any port 80 proto tcp
 ufw allow from "${MON_IP}" to any port 443 proto tcp
+ufw allow from "${MON_IP}" to any port 8443 proto tcp
 ufw allow from "${MON_IP}" to any port 9113 proto tcp
 ufw --force enable

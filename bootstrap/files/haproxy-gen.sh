@@ -30,7 +30,7 @@ backend be_https
     option httpchk
     http-check send meth GET uri /healthz
     http-check expect status 200
-    default-server inter 2s fall 2 rise 2 check check-ssl verify none
+    default-server inter 2s fall 2 rise 2 check check-ssl verify none send-proxy-v2 check-send-proxy
 CFG
 n=0
 for ip in ${WEB_IPS}; do
@@ -41,7 +41,7 @@ cat <<CFG
 
 backend be_http
     balance roundrobin
-    default-server inter 2s fall 2 rise 2 check
+    default-server inter 2s fall 2 rise 2 check send-proxy-v2 check-send-proxy
 CFG
 n=0
 for ip in ${WEB_IPS}; do
